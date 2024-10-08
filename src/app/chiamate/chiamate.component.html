@@ -1,0 +1,72 @@
+<div class="container">
+  <h1>Elenco Chiamate</h1>
+
+  <div class="filter-container">
+    <!-- Input per la ricerca -->
+    <input 
+      type="text" 
+      class="search-input" 
+      placeholder="Cerca per ID o numero" 
+      [(ngModel)]="searchTerm" 
+      (input)="filterCalls()"
+    />
+
+    <!-- Input per la selezione della data -->
+    <input 
+      type="date" 
+      class="filter-date" 
+      [(ngModel)]="selectedDate" 
+      (change)="onDateChange()" 
+    />
+
+    <!-- Menu a discesa per il filtro dello stato della chiamata -->
+    <select class="filter-select" [(ngModel)]="statusFilter" (change)="filterCalls()">
+      <option value="">Tutti gli esiti</option>
+      <option value="true">Successo</option>
+      <option value="false">Fallito</option>
+    </select>
+  </div>
+
+  <!-- Se non ci sono chiamate disponibili -->
+  <div *ngIf="filteredCalls.length === 0 && !loading">
+    <p>Nessuna chiamata disponibile al momento.</p>
+  </div>
+
+  <!-- Tabella chiamate -->
+  <table *ngIf="filteredCalls.length > 0" class="table table-bordered">
+    <thead>
+      <tr>
+        <th>Id</th>
+        <th>Data</th>
+        <th>Ora avvio chiamata</th>
+        <th>Ora connessione operatore</th>
+        <th>Durata (s)</th>
+        <th>Chiamante</th>
+        <th>Destinatario</th>
+        <th>Esito</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Usa filteredCalls per mostrare solo le chiamate filtrate -->
+      <tr *ngFor="let call of filteredCalls">
+        <td>{{ call.callId }}</td>
+        <td>{{ call.setupTime | date: 'yyyy-MM-dd' }}</td>
+        <td>{{ call.setupTime | date: 'HH:mm:ss' }}</td>
+        <td>{{ call.connectTime | date : 'HH:mm:ss' }}</td>
+        <td>{{ call.durationSeconds }}</td>
+        <td>{{ call.callingEntity.displayName }} ({{ call.callingEntity.phoneNumber }})</td>
+        <td>{{ call.calledEntity.displayName }} ({{ call.calledEntity.phoneNumber }})</td>
+        <td>{{ call.successful ? 'Successo' : 'Fallita' }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Messaggio di caricamento -->
+  <div *ngIf="loading" class="loading-indicator">
+    <p>Caricamento in corso...</p>
+  </div>
+
+  <!-- Bottone per caricare più chiamate -->
+  <button (click)="loadMoreCalls()" *ngIf="!loading" class="load-more-btn">Avanza di un giorno</button>
+  <h5>Attenzione: se non le chiamate non vengono visualizzate cliccare più volte.</h5>
+</div>

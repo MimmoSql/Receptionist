@@ -1,1 +1,19 @@
-/* You can add global styles to this file, and also import other style files */
+body {
+  font-family: 'Courier New', Courier, monospace;
+  margin: 0;
+  height: 100%;
+  overflow-x: hidden; /* Evita lo scrolling orizzontale */
+}
+
+/* Aggiungi uno sfondo generale */
+html, body {
+  height: 100%;
+  background-size: cover;
+}
+
+main {
+  margin-left: 200px; /* Assumendo che la larghezza della sidebar sia 200px */
+  padding: 20px;
+  min-height: 100vh; /* Assicura che il contenuto copra almeno l'altezza dello schermo */
+}
+

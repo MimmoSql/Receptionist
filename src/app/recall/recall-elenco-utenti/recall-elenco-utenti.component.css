@@ -1,0 +1,15 @@
+.btn-small {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+  line-height: 1.25;
+  border-radius: 0.2rem;
+}
+
+.btn-edit {
+  background-color: #007bff; /* Colore di sfondo (blu) */
+  color: white; /* Colore del testo */
+}
+
+.btn-edit:hover {
+  background-color: #0056b3; /* Colore di sfondo al passaggio del mouse */
+}

@@ -1,0 +1,43 @@
+.sidenav {
+    height: 100%;
+    width: 200px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: #492dc2;
+    padding-top: 20px;
+}
+
+.logo-container {
+    text-align: center;
+    padding: 10px 0;
+}
+
+.logo {
+    max-width: 100%;
+    height: auto;
+}
+  
+
+.nav {
+    list-style-type: none;
+    padding: 0;
+}
+
+.nav-link {
+    color: white;
+    text-decoration: none;
+    padding: 8px 16px;
+    display: block;
+}
+
+.nav-link.active {
+    font-weight: bold;
+    background-color: #000000c5;
+    border-radius: 4px;
+}
+
+.nav-link:hover {
+    background-color: #495057;
+    border-radius: 4px;
+}

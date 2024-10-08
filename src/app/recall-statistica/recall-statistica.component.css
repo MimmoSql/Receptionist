@@ -1,0 +1,15 @@
+.chart-wrapper {
+    position: relative;
+    height: 20vh;
+    width: 50%; /* Assicura che il contenitore occupi il 100% della larghezza */
+    overflow-x: auto; /* Permette lo scroll orizzontale se necessario */
+}
+
+.chart-container {
+    width: 10%; /* Assicura che il contenitore del grafico occupi il 100% della larghezza */
+}
+
+canvas {
+    width: 95% !important; /* Assicura che il canvas del grafico occupi il 100% della larghezza */
+    height: auto !important;
+}

@@ -1,0 +1,36 @@
+<!-- recall-elenco-utenti.component.html -->
+<div class="container mt-5">
+  <h2 class="mb-4">Elenco Utenti</h2>
+  
+  <!-- Barra di ricerca -->
+  <input type="text" class="form-control mb-3" placeholder="Cerca utente..." [(ngModel)]="searchTerm">
+  
+  <!-- Tabella degli utenti -->
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th>Nome</th>
+        <th>Cognome</th>
+        <th>Sinonimi</th>
+        <th>Interno</th>
+        <th>Azioni</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let utente of utenti | filterUsers: searchTerm">
+        <td>{{ utente.nome }}</td>
+        <td>{{ utente.cognome }}</td>
+        <td>{{ utente.sinonimi }}</td>
+        <td>{{ utente.interno }}</td>
+        <td>
+          <button (click)="editUtente(utente)" class="btn btn-primary" matTooltip="Modifica">
+            <i class="fa fa-edit"></i>
+          </button>
+          <button (click)="deleteUtente(utente)" class="btn btn-danger" matTooltip="Elimina">
+            <i class="fa fa-trash"></i>
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

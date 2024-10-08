@@ -1,0 +1,21 @@
+.container {
+    display: flex;
+}
+
+app-sidebar {
+    width: 200px;
+}
+
+.content {
+    flex: 1;
+    padding: 20px;
+}
+
+app-footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    background-color: #f1f1f1;
+    text-align: center;
+    padding: 10px 0;
+}

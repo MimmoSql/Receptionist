@@ -1,0 +1,32 @@
+<!-- Visualizzazione mensile -->
+<div *ngIf="viewMode === 'monthly'">
+  <div>
+    <!-- Rimuovi il pulsante nella visualizzazione mensile, mantenendolo solo nella vista giornaliera -->
+    <button (click)="backToMonthly()" *ngIf="viewMode === 'monthly'">Torna ai dati mensili</button>
+  </div>
+  <div>
+    <canvas baseChart
+      [datasets]="barChartData"
+      [labels]="barChartLabels"
+      [options]="barChartOptions"
+      [legend]="barChartLegend"
+      [type]="barChartType">
+    </canvas>
+  </div>
+</div>
+
+<!-- Visualizzazione giornaliera -->
+<div *ngIf="viewMode === 'daily'">
+  <div>
+    <button (click)="backToMonthly()">Torna ai dati mensili</button>
+  </div>
+  <div>
+    <canvas baseChart
+      [datasets]="barChartData"
+      [labels]="barChartLabels"
+      [options]="barChartOptions"
+      [legend]="barChartLegend"
+      [type]="barChartType">
+    </canvas>
+  </div>
+</div>

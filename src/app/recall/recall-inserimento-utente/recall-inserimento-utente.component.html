@@ -1,0 +1,44 @@
+<div class="container d-flex justify-content-center align-items-center vh-100">
+  <div class="card p-4" style="width: 400px;">
+    <div class="text-center mb-4">
+      <img src="../../../../assets/images/receptionist.png" alt="logo" class="mb-3" style="width: 90px;">
+      <h3>Aggiungi utente</h3>
+    </div>
+    <form (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label for="nome">Nome</label>
+        <input type="text" id="nome" class="form-control" [(ngModel)]="nome" name="nome" required>
+      </div>
+      <div class="form-group">
+        <label for="cognome">Cognome</label>
+        <input type="text" id="cognome" class="form-control" [(ngModel)]="cognome" name="cognome" required>
+      </div>
+      <div class="form-group">
+        <label for="sinonimo">Sinonimi</label>
+        <div class="input-group mb-3">
+          <input type="text" id="sinonimo" class="form-control" [(ngModel)]="sinonimo" name="sinonimo" required>
+          <div class="input-group-append">
+            <button type="button" class="btn btn-outline-secondary" (click)="aggiungiSinonimo()">+</button>
+          </div>
+        </div>
+        <ul class="list-group">
+          <li class="list-group-item" *ngFor="let sinonimo of sinonimi; let i = index">
+            {{ sinonimo }}
+            <button type="button" class="close" aria-label="Close" (click)="rimuoviSinonimo(i)">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </li>
+        </ul>
+      </div>
+      <div class="form-group">
+        <label for="interno">Interno</label>
+        <input type="text" id="interno" class="form-control" [(ngModel)]="interno" name="interno" required>
+      </div>
+      <button type="submit" class="btn btn-primary btn-block mt-4">Aggiungi</button>
+    </form>
+    <div class="text-center mt-4">
+      <small>Receptionist - v0.5.2</small><br>
+      <small>REGIONE CALABRIA</small>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,11 @@
+<h1 mat-dialog-title>Modifica Utente</h1>
+<div mat-dialog-content>
+  <p>Nome: <input [(ngModel)]="data.nome"></p>
+  <p>Cognome: <input [(ngModel)]="data.cognome"></p>
+  <p>Sinonimi: <input [(ngModel)]="data.sinonimi"></p>
+  <p>Interno: <input [(ngModel)]="data.interno"></p>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">Annulla</button>
+  <button mat-button [mat-dialog-close]="data">Salva</button>
+</div>

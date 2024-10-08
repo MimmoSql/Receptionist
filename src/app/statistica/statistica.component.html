@@ -1,0 +1,43 @@
+<!-- statistica.component.html -->
+<div class="chart-container">
+    <h2>Statistiche delle Chiamate</h2>
+  
+    <!-- Spinner di caricamento (visibile durante il caricamento dei dati) -->
+    <div *ngIf="loading" class="loading-spinner">
+      <p>Caricamento in corso...</p>
+    </div>
+  
+    <!-- Messaggio quando non ci sono chiamate -->
+    <div *ngIf="!loading && allCalls.length === 0" class="no-data-message">
+      <p>Nessuna chiamata disponibile da visualizzare.</p>
+    </div>
+  
+    <!-- Canvas per il grafico, sarà riempito dal codice JavaScript tramite Chart.js -->
+    <div *ngIf="!loading && allCalls.length > 0">
+      <canvas id="chartCanvas"></canvas>
+    </div>
+  </div>
+  
+  <!-- Styling di base per la pagina -->
+  <style>
+    .chart-container {
+      width: 80%;
+      margin: 0 auto;
+      text-align: center;
+    }
+  
+    .loading-spinner {
+      margin-top: 20px;
+    }
+  
+    .no-data-message {
+      margin-top: 20px;
+      color: red;
+    }
+  
+    canvas {
+      max-width: 100%;
+      height: 400px;
+    }
+  </style>
+  
