@@ -36,7 +36,8 @@ import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideToastr } from 'ngx-toastr';
 import { NgxEchartsModule } from 'ngx-echarts';
 import * as echarts from 'echarts';
-import {NgChartsModule} from 'ng2-charts';
+
+
 //SERVICE
 import { UtenteService } from './services/utente.service';
 //PIPE
@@ -77,7 +78,7 @@ import { DialogOpenChartComponent } from './dialog-open-chart/dialog-open-chart.
     NgxEchartsModule.forRoot({ echarts }),
     BrowserModule,
     AppRoutingModule,
-    NgChartsModule,
+
     MatButtonModule,
     MatSliderModule,
     MatSidenavModule,
