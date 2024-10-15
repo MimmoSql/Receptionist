@@ -6,6 +6,7 @@ import { ChartDataset, ChartOptions } from 'chart.js';
 import moment from 'moment';
 import { DialogOpenChartComponent } from '../../../src/app/dialog-open-chart/dialog-open-chart.component';
 import { RecallStatisticaComponent } from '../recall-statistica/recall-statistica.component';
+import { UtenteService } from '../services/utente.service';
 import { MatDialog } from '@angular/material/dialog';
 
 interface TokenResponse {
@@ -14,6 +15,7 @@ interface TokenResponse {
 
 interface CallData {
   callId: string;
+  
   callingEntity: {
     id: string;
     type: string;
@@ -21,6 +23,7 @@ interface CallData {
     phoneNumber: string;
     isTeams: boolean;
     isClickToCall: boolean;
+    
   };
   calledEntity: {
     id: string;
@@ -58,7 +61,7 @@ export class StatisticaComponent implements OnInit, OnDestroy {
   itemsPerPage: number = 100;
   totalPages: number = 1;
   selectedDate: string = '';
-  
+  uniqueCallIds = new Set<string>();
   agentNameFilter: string = '';
 
   pieChartData: number[] = [0, 0, 0, 0];
@@ -73,7 +76,7 @@ export class StatisticaComponent implements OnInit, OnDestroy {
   
   private updateInterval: any;
 
-  constructor(private http: HttpClient, private dialog: MatDialog) {}
+  constructor(private http: HttpClient, private dialog: MatDialog, private UtenteService:UtenteService) {}
 
   ngOnInit(): void {
     this.startUpdatingCalls();
@@ -143,11 +146,11 @@ export class StatisticaComponent implements OnInit, OnDestroy {
             const newCalls = response.calls.filter(call => {
               const calledEntityDisplayName = call.calledEntity.displayName;
               return calledEntityDisplayName && calledEntityDisplayName.toLowerCase().includes('agent-no-2');
-            });
+            }).filter(call => !this.uniqueCallIds.has(call.callId)); 
             for (const call of newCalls) {
               // Salva ogni chiamata nel backend
               try {
-                await this.saveCallData(this.transformCallData(call)).toPromise();
+                await this.UtenteService.saveCallData(this.transformCallData(call)).toPromise();
               } catch (error) {
                 console.error('Errore nel salvataggio della chiamata:', call.callId, error);
               }

@@ -15,7 +15,7 @@ export class RecallStatisticaComponent {
   viewMode: ViewMode = 'monthly'; // Imposta il valore iniziale
   allCalls: any[] = [];
 
-  // Definizione dell'opzione del grafico
+  // Definizione dell'opzione del grafico principale (mensile/giornaliero)
   barChartData: EChartsOption = {
     tooltip: {
       trigger: 'item'
@@ -29,7 +29,7 @@ export class RecallStatisticaComponent {
     },
     xAxis: {
       type: 'category',
-      data: [] as string[], // Dichiariamo data come array di stringhe
+      data: [] as string[],
       axisLabel: {
         color: '#000'
       }
@@ -44,9 +44,39 @@ export class RecallStatisticaComponent {
       {
         name: 'Totale chiamate',
         type: 'bar',
-        data: [] as number[], // Dichiariamo data come array di numeri
+        data: [] as number[],
         itemStyle: {
           color: '#007BFF'
+        }
+      }
+    ]
+  };
+
+  // Definizione dell'opzione per il grafico di dettaglio
+  detailChartData: EChartsOption = {
+    tooltip: {
+      trigger: 'item'
+    },
+    xAxis: {
+      type: 'category',
+      data: [] as string[],
+      axisLabel: {
+        color: '#000'
+      }
+    },
+    yAxis: {
+      type: 'value',
+      axisLabel: {
+        color: '#000'
+      }
+    },
+    series: [
+      {
+        name: 'Dettagli chiamate',
+        type: 'line',
+        data: [] as number[],
+        itemStyle: {
+          color: '#FF5733'
         }
       }
     ]
@@ -57,55 +87,77 @@ export class RecallStatisticaComponent {
     this.updateMonthlyData(); // Inizializza con i dati mensili
   }
 
-  // Funzione per aggiornare i dati mensili
+  // Funzione per aggiornare i dati mensili (grafico principale e dettaglio)
   updateMonthlyData() {
     const callsByMonth: { [month: string]: number } = {};
+    const detailData: { [month: string]: number } = {}; // Dati per il grafico di dettaglio
 
     this.allCalls.forEach(call => {
       const month = moment(call.setupTime).format('MMMM YYYY');
       if (!callsByMonth[month]) {
         callsByMonth[month] = 0;
+        detailData[month] = Math.floor(Math.random() * 50); // Dati casuali per esempio
       }
       callsByMonth[month]++;
     });
 
-    // Assicuriamoci che xAxis.data sia un array di stringhe
     const xAxisData = Object.keys(callsByMonth);
     const seriesData = Object.values(callsByMonth);
+    const detailSeriesData = Object.values(detailData);
 
+    // Aggiorna dati per il grafico principale
     if (this.barChartData.xAxis && typeof this.barChartData.xAxis === 'object') {
-      (this.barChartData.xAxis as { data: string[] }).data = xAxisData; // Type assertion
+      (this.barChartData.xAxis as { data: string[] }).data = xAxisData;
     }
     if (this.barChartData.series && Array.isArray(this.barChartData.series)) {
-      (this.barChartData.series[0] as { data: number[] }).data = seriesData; // Type assertion
+      (this.barChartData.series[0] as { data: number[] }).data = seriesData;
+    }
+
+    // Aggiorna dati per il grafico di dettaglio
+    if (this.detailChartData.xAxis && typeof this.detailChartData.xAxis === 'object') {
+      (this.detailChartData.xAxis as { data: string[] }).data = xAxisData;
+    }
+    if (this.detailChartData.series && Array.isArray(this.detailChartData.series)) {
+      (this.detailChartData.series[0] as { data: number[] }).data = detailSeriesData;
     }
 
     this.viewMode = 'monthly'; // Assicurati che la vista sia mensile
   }
 
-  // Funzione per visualizzare i dati giornalieri
+  // Funzione per visualizzare i dati giornalieri (grafico principale e dettaglio)
   showDailyData(month: string) {
     const callsByDay: { [day: string]: number } = {};
+    const detailData: { [day: string]: number } = {}; // Dati per il grafico di dettaglio
 
     this.allCalls.forEach(call => {
       if (moment(call.setupTime).format('MMMM YYYY') === month) {
         const day = moment(call.setupTime).format('D MMM YYYY');
         if (!callsByDay[day]) {
           callsByDay[day] = 0;
+          detailData[day] = Math.floor(Math.random() * 20); // Dati casuali per esempio
         }
         callsByDay[day]++;
       }
     });
 
-    // Assicuriamoci che xAxis.data sia un array di stringhe
     const xAxisData = Object.keys(callsByDay);
     const seriesData = Object.values(callsByDay);
+    const detailSeriesData = Object.values(detailData);
 
+    // Aggiorna dati per il grafico principale
     if (this.barChartData.xAxis && typeof this.barChartData.xAxis === 'object') {
-      (this.barChartData.xAxis as { data: string[] }).data = xAxisData; // Type assertion
+      (this.barChartData.xAxis as { data: string[] }).data = xAxisData;
     }
     if (this.barChartData.series && Array.isArray(this.barChartData.series)) {
-      (this.barChartData.series[0] as { data: number[] }).data = seriesData; // Type assertion
+      (this.barChartData.series[0] as { data: number[] }).data = seriesData;
+    }
+
+    // Aggiorna dati per il grafico di dettaglio
+    if (this.detailChartData.xAxis && typeof this.detailChartData.xAxis === 'object') {
+      (this.detailChartData.xAxis as { data: string[] }).data = xAxisData;
+    }
+    if (this.detailChartData.series && Array.isArray(this.detailChartData.series)) {
+      (this.detailChartData.series[0] as { data: number[] }).data = detailSeriesData;
     }
 
     this.viewMode = 'daily'; // Cambia modalità di visualizzazione

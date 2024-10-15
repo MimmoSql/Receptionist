@@ -45,7 +45,7 @@ import { FilterUsersPipe } from './pipe/FilterUsersPipe';
 
 import { SidebarComponent } from './sidebar/sidebar.component';
 import { ChiamateComponent } from './chiamate/chiamate.component';
-import { StatisticaComponent } from './statistica/statistica.component';
+import { StatisticaComponent } from '././statistica/statistica.component';
 
 import {
   MomentDateAdapter,
