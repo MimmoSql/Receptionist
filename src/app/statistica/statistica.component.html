@@ -1,43 +1,48 @@
-<!-- statistica.component.html -->
-<div class="chart-container">
-    <h2>Statistiche delle Chiamate</h2>
-  
-    <!-- Spinner di caricamento (visibile durante il caricamento dei dati) -->
-    <div *ngIf="loading" class="loading-spinner">
-      <p>Caricamento in corso...</p>
-    </div>
-  
-    <!-- Messaggio quando non ci sono chiamate -->
-    <div *ngIf="!loading && allCalls.length === 0" class="no-data-message">
-      <p>Nessuna chiamata disponibile da visualizzare.</p>
-    </div>
-  
-    <!-- Canvas per il grafico, sarà riempito dal codice JavaScript tramite Chart.js -->
-    <div *ngIf="!loading && allCalls.length > 0">
-      <canvas id="chartCanvas"></canvas>
-    </div>
+<div class="table-container">
+  <button class="btn btn-secondary" (click)="updateBarChartData()">Mostra istogramma</button>
+  <button class="btn btn-secondary" (click)="updatePieChartData()">Mostra Grafico a Torta</button>
+
+  <table class="table table-bordered table-striped table-hover">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Chiamante</th>
+        <th>Chiamato</th>
+        <th>Data di avvio</th>
+        <th>Data di connessione</th>
+        <th>Data di fine</th>
+        <th>Durata (secondi)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <ng-container *ngIf="paginatedCalls && paginatedCalls.length > 0; else noCalls">
+        <tr *ngFor="let callData of paginatedCalls">
+          <td>{{ callData.callId }}</td>
+          <td>{{ callData.callingEntity.displayName }} ({{ callData.callingEntity.phoneNumber }})</td>
+          <td>{{ callData.calledEntity.displayName }} ({{ callData.calledEntity.phoneNumber }})</td>
+          <td>{{ callData.setupTime }}</td>
+          <td>{{ callData.connectTime }}</td>
+          <td>{{ callData.endTime }}</td>
+          <td>{{ callData.durationSeconds }}</td>
+        </tr>
+      </ng-container>
+      <ng-template #noCalls>
+        <tr>
+          <td colspan="7">Nessuna chiamata trovata</td>
+        </tr>
+      </ng-template>
+    </tbody>
+  </table>
+</div>
+
+<div class="pagination-container">
+  <div class="d-flex justify-content-between align-items-center">
+    <button class="btn btn-primary" (click)="prevPage()" [disabled]="currentPage === 1">Previous</button>
+    <ul class="pagination">
+      <li *ngFor="let page of [].constructor(totalPages); let i = index">
+        <a href="#" (click)="onPageClick($event, i + 1)" [class.active]="i + 1 === currentPage">{{ i + 1 }}</a>
+      </li>
+    </ul>
+    <button class="btn btn-primary" (click)="nextPage()" [disabled]="currentPage === totalPages">Next</button>
   </div>
-  
-  <!-- Styling di base per la pagina -->
-  <style>
-    .chart-container {
-      width: 80%;
-      margin: 0 auto;
-      text-align: center;
-    }
-  
-    .loading-spinner {
-      margin-top: 20px;
-    }
-  
-    .no-data-message {
-      margin-top: 20px;
-      color: red;
-    }
-  
-    canvas {
-      max-width: 100%;
-      height: 400px;
-    }
-  </style>
-  
+</div>
