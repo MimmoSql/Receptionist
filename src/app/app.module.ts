@@ -36,6 +36,7 @@ import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideToastr } from 'ngx-toastr';
 import { NgxEchartsModule } from 'ngx-echarts';
 import * as echarts from 'echarts';
+import { NgxChartsModule } from '@swimlane/ngx-charts';
 
 
 //SERVICE
@@ -45,7 +46,7 @@ import { FilterUsersPipe } from './pipe/FilterUsersPipe';
 
 import { SidebarComponent } from './sidebar/sidebar.component';
 import { ChiamateComponent } from './chiamate/chiamate.component';
-import { StatisticaComponent } from '././statistica/statistica.component';
+import { StatisticaComponent } from './statistica/statistica.component';
 
 import {
   MomentDateAdapter,
@@ -57,6 +58,7 @@ import { RubricaComponent } from './rubrica/rubrica.component';
 import { EditUserDialogComponent } from './edit-user-dialog/edit-user-dialog.component';
 import { RecallStatisticaComponent } from './recall-statistica/recall-statistica.component';
 import { DialogOpenChartComponent } from './dialog-open-chart/dialog-open-chart.component';
+import { ChartsModule } from 'ng2-charts';
 
 @NgModule({
   declarations: [
@@ -75,10 +77,11 @@ import { DialogOpenChartComponent } from './dialog-open-chart/dialog-open-chart.
   ],
   imports: [
     BrowserAnimationsModule,
+    ChartsModule,
     NgxEchartsModule.forRoot({ echarts }),
     BrowserModule,
     AppRoutingModule,
-
+    NgxChartsModule,
     MatButtonModule,
     MatSliderModule,
     MatSidenavModule,

@@ -1,0 +1,11 @@
+
+.chart-container {
+    width: 400px;  /* Imposta la larghezza desiderata */
+    height: 400px; /* Imposta l'altezza desiderata */
+  }
+  
+  #pieChartCanvas {
+    width: 100% !important;
+    height: 100% !important;
+  }
+  

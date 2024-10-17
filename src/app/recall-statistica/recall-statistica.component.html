@@ -1,29 +1,33 @@
 <!-- Visualizzazione mensile -->
 <div *ngIf="viewMode === 'monthly'">
   <div>
-    <button (click)="backToMonthly()">Torna ai dati mensili</button>
+    <!-- Il pulsante è visibile solo nella vista giornaliera, quindi rimuoviamo questa condizione -->
+    <button (click)="backToMonthly()" *ngIf="viewMode === 'monthly'">Torna ai dati mensili</button>
   </div>
   <div>
-    <!-- Grafico mensile principale -->
-    <echarts [options]="barChartData" style="height: 400px;"></echarts>
-  </div>
-  <div>
-    <!-- Grafico mensile di dettaglio -->
-    <echarts [options]="detailChartData" style="height: 200px;"></echarts>
+    <canvas baseChart
+      [datasets]="barChartData"
+      [labels]="barChartLabels"
+      [options]="barChartOptions"
+      [legend]="barChartLegend"
+      [type]="barChartType">
+    </canvas>
   </div>
 </div>
 
 <!-- Visualizzazione giornaliera -->
 <div *ngIf="viewMode === 'daily'">
   <div>
+    <!-- Il pulsante è visibile solo nella vista giornaliera -->
     <button (click)="backToMonthly()">Torna ai dati mensili</button>
   </div>
   <div>
-    <!-- Grafico giornaliero principale -->
-    <echarts [options]="barChartData" style="height: 400px;"></echarts>
-  </div>
-  <div>
-    <!-- Grafico giornaliero di dettaglio -->
-    <echarts [options]="detailChartData" style="height: 200px;"></echarts>
+    <canvas baseChart
+      [datasets]="barChartData"
+      [labels]="barChartLabels"
+      [options]="barChartOptions"
+      [legend]="barChartLegend"
+      [type]="barChartType">
+    </canvas>
   </div>
 </div>

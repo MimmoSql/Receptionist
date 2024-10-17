@@ -2,12 +2,13 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
+import { MatDialog } from '@angular/material/dialog';
 import { ChartDataset, ChartOptions } from 'chart.js';
 import moment from 'moment';
-import { DialogOpenChartComponent } from '../../../src/app/dialog-open-chart/dialog-open-chart.component';
+import { DialogOpenChartComponent } from '../dialog-open-chart/dialog-open-chart.component';
 import { RecallStatisticaComponent } from '../recall-statistica/recall-statistica.component';
 import { UtenteService } from '../services/utente.service';
-import { MatDialog } from '@angular/material/dialog';
+
 
 interface TokenResponse {
   token: string;
@@ -15,7 +16,6 @@ interface TokenResponse {
 
 interface CallData {
   callId: string;
-  
   callingEntity: {
     id: string;
     type: string;
@@ -23,7 +23,6 @@ interface CallData {
     phoneNumber: string;
     isTeams: boolean;
     isClickToCall: boolean;
-    
   };
   calledEntity: {
     id: string;
@@ -47,11 +46,10 @@ interface CallData {
   features: string[];
 }
 
-
 @Component({
-  selector: 'app-statistica',
+  selector: 'app-recall',
   templateUrl: './statistica.component.html',
-  styleUrls: ['./statistica.component.css']
+  styleUrls: ['./statistica.component.css'],
 })
 export class StatisticaComponent implements OnInit, OnDestroy {
   allCalls: CallData[] = [];
@@ -61,8 +59,8 @@ export class StatisticaComponent implements OnInit, OnDestroy {
   itemsPerPage: number = 100;
   totalPages: number = 1;
   selectedDate: string = '';
-  uniqueCallIds = new Set<string>();
   agentNameFilter: string = '';
+  uniqueCallIds = new Set<string>();
 
   pieChartData: number[] = [0, 0, 0, 0];
   barChartData: ChartDataset<'bar'>[] = [{ data: [], label: 'Totale chiamate giornaliere' }];
@@ -76,7 +74,7 @@ export class StatisticaComponent implements OnInit, OnDestroy {
   
   private updateInterval: any;
 
-  constructor(private http: HttpClient, private dialog: MatDialog, private UtenteService:UtenteService) {}
+  constructor(private http: HttpClient, private dialog: MatDialog, private UtenteService: UtenteService) {}
 
   ngOnInit(): void {
     this.startUpdatingCalls();
@@ -90,7 +88,7 @@ export class StatisticaComponent implements OnInit, OnDestroy {
     this.getCallsData(); // Esegui una chiamata API subito
     this.updateInterval = setInterval(() => {
       this.getCallsData();
-    }, 10000); // Aggiorna ogni 10 secondi
+    }, 500000); // Aggiorna ogni 5 min
   }
 
   getToken(): Observable<string> {
@@ -121,69 +119,70 @@ export class StatisticaComponent implements OnInit, OnDestroy {
         throw new Error('Token non disponibile');
       }
       this.token = token;
-
+  
       const headers = new HttpHeaders({
         'Authorization': `Bearer ${this.token}`
       });
-
-      const startDate = '2024-04-01';
-      const endDate = moment(startDate).add(2, 'days');
-
-      while (moment().isAfter(endDate)) {
-        console.log('Start Date:', startDate);
-        console.log('End Date:', endDate.format('YYYY-MM-DD'));
-
+  
+      let currentDate = moment('2024-04-01'); // Data di inizio
+      const today = moment(); // Data crrente
+  
+      while (currentDate.isBefore(today)) {
+        const startDate = currentDate.format('YYYY-MM-DD');
+        const endDate = currentDate.clone().add(1, 'day').format('YYYY-MM-DD');
+  
         let page = 1;
-        const pageSize = 1000000;
+        const limit = 1000;
         let hasMoreData = true;
-        
+  
         while (hasMoreData) {
-          const url = `https://livehub.audiocodes.io/api/v1/calls?sort=-setupTime&filter=(setupTime%3E%3D${startDate}%2CsetupTime%3C${endDate.format('YYYY-MM-DD')})&page=${page}&pageSize=${pageSize}`;
-          const response = await this.http.get<{ calls: CallData[] }>(url, { headers }).toPromise();
-          console.log('API Response:', response);
-
-          if (response && response.calls) {
-            const newCalls = response.calls.filter(call => {
-              const calledEntityDisplayName = call.calledEntity.displayName;
-              return calledEntityDisplayName && calledEntityDisplayName.toLowerCase().includes('agent-no-2');
-            }).filter(call => !this.uniqueCallIds.has(call.callId)); 
-            for (const call of newCalls) {
-              // Salva ogni chiamata nel backend
-              try {
-                await this.UtenteService.saveCallData(this.transformCallData(call)).toPromise();
-              } catch (error) {
-                console.error('Errore nel salvataggio della chiamata:', call.callId, error);
+          const url = `https://livehub.audiocodes.io/api/v1/calls?sort=-setupTime&filter=(setupTime%3E%3D${startDate}%2CsetupTime%3C${endDate})&page=${page}&limit=${limit}`;
+          try {
+            const response = await this.http.get<{ calls: CallData[] }>(url, { headers }).toPromise();
+            console.log('API Response:', response);
+  
+            if (response && response.calls) {
+              const newCalls = response.calls.filter(call => {
+                const calledEntityDisplayName = call.calledEntity.displayName;
+                return calledEntityDisplayName && calledEntityDisplayName.toLowerCase().includes('agent-no-2');
+              }).filter(call => !this.uniqueCallIds.has(call.callId)); 
+  
+              for (const call of newCalls) {
+                try {
+                  await this.UtenteService.saveCallData(this.transformCallData(call)).toPromise();
+                  this.uniqueCallIds.add(call.callId); // Aggiungi l'ID chiamata al Set
+                } catch (error) {
+                  console.error('Errore nel salvataggio della chiamata:', call.callId, error);
+                }
               }
-            }
-
-            this.allCalls = [...this.allCalls, ...newCalls];
-            console.log('All Calls:', JSON.stringify(this.allCalls, null, 2));
-
-            if (response.calls.length < pageSize) {
-              hasMoreData = false;
+  
+              this.allCalls = [...this.allCalls, ...newCalls];
+              console.log('All Calls:', JSON.stringify(this.allCalls, null, 2));
+  
+              if (response.calls.length < limit) {
+                hasMoreData = false;
+              } else {
+                page++;
+              }
             } else {
-              page++;
-              endDate.add(1, 'days');
-              this.currentPage++;
+              throw new Error('Nessun dato ricevuto');
             }
-          } else {
-            throw new Error('Nessun dato ricevuto');
+          } catch (apiError) {
+            console.error('Errore nella richiesta API:', 'URL:', url);
+            hasMoreData = false; // Esci dal ciclo in caso di errore API
           }
         }
-
-        this.allCalls = this.filterUniqueCalls(this.allCalls);
-        this.updatePaginatedCalls();
-
-        // Incrementa la data di fine di 1 giorno
-        endDate.add(1, 'days');
+  
+        currentDate.add(1, 'day'); // Incrementa la data di un giorno
       }
-
+  
       this.totalPages = Math.ceil(this.allCalls.length / this.itemsPerPage);
+      this.updatePaginatedCalls();
     } catch (error) {
       console.error('Errore nella richiesta dei dati delle chiamate:', error);
     }
   }
-
+  
   transformCallData(call: CallData): any {
     return {
       "callId": call.callId,
@@ -223,17 +222,6 @@ export class StatisticaComponent implements OnInit, OnDestroy {
     );
   }
 
-  filterUniqueCalls(calls: CallData[]): CallData[] {
-    const uniqueCallIds = new Set<string>();
-    return calls.filter(call => {
-      if (!uniqueCallIds.has(call.callId)) {
-        uniqueCallIds.add(call.callId);
-        return true;
-      }
-      return false;
-    });
-  }
-
   updatePaginatedCalls() {
     if (!this.selectedDate) {
       // Applica il filtro del nome dell'agente se specificato
@@ -263,22 +251,34 @@ export class StatisticaComponent implements OnInit, OnDestroy {
   }
 
   updatePieChartData() {
+    // Filtra le chiamate per ottenere solo quelle con callId unici
     const uniqueCalls = this.filterUniqueCalls(this.allCalls);
-
+  
+    // Filtra le chiamate che sono state passate a RecallStatisticaComponent
+    const callsByDate: { [date: string]: number } = {};
+    
+    uniqueCalls.forEach(call => {
+      const date = moment(call.setupTime).format('D MMM YY');
+      if (!callsByDate[date]) {
+        callsByDate[date] = 0;
+      }
+      callsByDate[date]++;
+    });
+  
+    // Ora usa i dati filtrati per il grafico a torta
     const totalCalls = uniqueCalls.length;
     const successfulCalls = uniqueCalls.filter(call => call.successful).length;
     const unsuccessfulCalls = totalCalls - successfulCalls;
-
     const recordedCalls = uniqueCalls.filter(call => call.recorded).length;
     const notRecordedCalls = totalCalls - recordedCalls;
-
+  
     this.pieChartData = [
       successfulCalls,
       unsuccessfulCalls,
       recordedCalls,
       notRecordedCalls
     ];
-
+  
     this.dialog.open(DialogOpenChartComponent, {
       data: {
         pieChartData: this.pieChartData,
@@ -289,21 +289,24 @@ export class StatisticaComponent implements OnInit, OnDestroy {
   
 
   updateBarChartData() {
+    // Filtra le chiamate per ottenere solo quelle con callId unici
+    const uniqueCalls = this.filterUniqueCalls(this.allCalls);
+  
     const callsByDate: { [date: string]: number } = {};
-
-    this.allCalls.forEach(call => {
-      const date = moment(call.setupTime).format('DMMM YY');
+  
+    uniqueCalls.forEach(call => {
+      const date = moment(call.setupTime).format('D MMM YY');
       if (!callsByDate[date]) {
         callsByDate[date] = 0;
       }
       callsByDate[date]++;
     });
-
+  
     this.barChartLabels = Object.keys(callsByDate);
     this.barChartData = [
       { data: Object.values(callsByDate), label: 'Totale chiamate per giorno' }
     ];
-
+  
     this.dialog.open(RecallStatisticaComponent, {
       data: {
         barChartData: this.barChartData,
@@ -312,23 +315,24 @@ export class StatisticaComponent implements OnInit, OnDestroy {
       }
     });
   }
-
+  
   updateMonthlyBarChartData() {
+    const uniqueCalls = this.filterUniqueCalls(this.allCalls);
     const callsByMonth: { [month: string]: number } = {};
-
-    this.allCalls.forEach(call => {
+  
+    uniqueCalls.forEach(call => {
       const month = moment(call.setupTime).format('MMM YYYY');
       if (!callsByMonth[month]) {
         callsByMonth[month] = 0;
       }
       callsByMonth[month]++;
     });
-
+  
     this.barChartLabels = Object.keys(callsByMonth);
     this.barChartData = [
       { data: Object.values(callsByMonth), label: 'Totale chiamate mensili' }
     ];
-
+  
     this.dialog.open(RecallStatisticaComponent, {
       data: {
         barChartData: this.barChartData,
@@ -337,13 +341,28 @@ export class StatisticaComponent implements OnInit, OnDestroy {
       }
     });
   }
+  
+  // Funzione per filtrare le chiamate uniche
+  filterUniqueCalls(calls: CallData[]): CallData[] {
+    const uniqueCallIds = new Set<string>();
+    return calls.filter(call => {
+      if (!uniqueCallIds.has(call.callId)) {
+        uniqueCallIds.add(call.callId);
+        return true;
+      }
+      return false;
+    });
+  }
+  
+
 
   showDailyData(month: string) {
+    const uniqueCalls = this.filterUniqueCalls(this.allCalls);
     const callsByDay: { [day: string]: number } = {};
     const startDate = moment(month, 'MMM YYYY').startOf('month');
     const endDate = moment(month, 'MMM YYYY').endOf('month');
 
-    this.allCalls.forEach(call => {
+    uniqueCalls.forEach(call => {
       const callDate = moment(call.setupTime);
       if (callDate.isBetween(startDate, endDate, 'day', '[]')) {
         const day = callDate.format('D MMM YYYY');
