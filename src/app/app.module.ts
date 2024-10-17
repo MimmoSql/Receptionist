@@ -37,7 +37,7 @@ import { provideToastr } from 'ngx-toastr';
 import { NgxEchartsModule } from 'ngx-echarts';
 import * as echarts from 'echarts';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
-
+import {  NgChartsConfiguration, NgChartsModule } from 'ng2-charts';
 
 //SERVICE
 import { UtenteService } from './services/utente.service';
@@ -58,7 +58,7 @@ import { RubricaComponent } from './rubrica/rubrica.component';
 import { EditUserDialogComponent } from './edit-user-dialog/edit-user-dialog.component';
 import { RecallStatisticaComponent } from './recall-statistica/recall-statistica.component';
 import { DialogOpenChartComponent } from './dialog-open-chart/dialog-open-chart.component';
-import { ChartsModule } from 'ng2-charts';
+
 
 @NgModule({
   declarations: [
@@ -77,8 +77,7 @@ import { ChartsModule } from 'ng2-charts';
   ],
   imports: [
     BrowserAnimationsModule,
-    ChartsModule,
-    NgxEchartsModule.forRoot({ echarts }),
+    NgChartsModule,
     BrowserModule,
     AppRoutingModule,
     NgxChartsModule,
