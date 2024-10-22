@@ -3,7 +3,6 @@ import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ChartDataset, ChartOptions } from 'chart.js'; 
 import moment from 'moment';
 
-
 type ViewMode = 'monthly' | 'daily';
 
 @Component({
@@ -14,16 +13,18 @@ type ViewMode = 'monthly' | 'daily';
 export class RecallStatisticaComponent {
   barChartData: ChartDataset<'bar'>[] = [
     {
-      data: [10000, 2, 3, 4, 5,6], // Sostituisci con i tuoi dati reali
+      data: [10000, 2, 3, 4, 5, 6], // Sostituisci con i tuoi dati reali
       label: 'Totale chiamate giornaliere',
-      backgroundColor: '#007BFF', // Imposta il colore blu per le barre
+      backgroundColor: '#007BFF', // Colore blu per le barre
       borderColor: '#0056b3', // Colore del bordo delle barre, opzionale
       borderWidth: 1 // Spessore del bordo, opzionale
     }
   ];
+  
   barChartLabels: string[] = [];
   allCalls: any[] = [];
   viewMode: ViewMode = 'monthly'; // Imposta il valore iniziale
+  showChartPopup: boolean = false; // Controlla se il popup è visibile
 
   // Definizione delle opzioni del grafico
   barChartOptions: ChartOptions<'bar'> = {
@@ -50,7 +51,6 @@ export class RecallStatisticaComponent {
         bodyColor: '#0000FF',
         borderColor: '#007BFF',
         borderWidth: 1
-       
       }
     },
     scales: {
@@ -77,7 +77,6 @@ export class RecallStatisticaComponent {
             size: 12,
             family: 'Arial',
             weight: 'bold'
-            
           }
         }
       }
@@ -122,6 +121,8 @@ export class RecallStatisticaComponent {
       { data: Object.values(callsByMonth), label: 'Totale chiamate per mese' }
     ];
     this.viewMode = 'monthly'; // Assicurati che la vista sia mensile
+
+    this.openChartPopup(); // Mostra il popup
   }
 
   // Funzione per visualizzare i dati giornalieri
@@ -149,4 +150,15 @@ export class RecallStatisticaComponent {
   backToMonthly() {
     this.updateMonthlyData(); // Aggiorna i dati per la vista mensile
   }
+
+  // Funzione per aprire il popup
+  openChartPopup() {
+    this.showChartPopup = true; // Mostra il popup
+  }
+
+  // Funzione per chiudere il popup
+  closeChartPopup() {
+    this.showChartPopup = false; // Nascondi il popup
+  }
+  
 }

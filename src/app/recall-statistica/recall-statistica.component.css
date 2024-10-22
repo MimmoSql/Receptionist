@@ -1,15 +1,49 @@
+.chart-popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Sfondo trasparente */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000; /* Per sovrapporre altri elementi */
+}
+
+.popup-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  position: relative; /* Necessario per posizionare la "X" */
+  width: 90%; /* Aumenta la larghezza a 90% della finestra */
+  max-width: 1000px; /* Imposta una larghezza massima */
+  height: 90%; /* Aumenta l'altezza a 90% della finestra */
+  max-height: 800px; /* Imposta un'altezza massima */
+  overflow: auto; /* Aggiungi lo scorrimento se necessario */
+}
+
 .chart-wrapper {
-    position: relative;
-    height: 20vh;
-    width: 50%; /* Assicura che il contenitore occupi il 100% della larghezza */
-    overflow-x: auto; /* Permette lo scroll orizzontale se necessario */
+  position: relative;
+  height: 80vh; /* Aumenta l'altezza del wrapper del grafico per occupare più spazio */
+  width: 100%; /* Assicura che il contenitore occupi il 100% della larghezza */
+  overflow-x: auto; /* Permette lo scroll orizzontale se necessario */
 }
 
 .chart-container {
-    width: 10%; /* Assicura che il contenitore del grafico occupi il 100% della larghezza */
+  width: 100%; /* Assicura che il contenitore del grafico occupi il 100% della larghezza */
+  height: 100%; /* Assicura che il contenitore del grafico occupi il 100% dell'altezza */
 }
 
 canvas {
-    width: 95% !important; /* Assicura che il canvas del grafico occupi il 100% della larghezza */
-    height: auto !important;
+  width: 100% !important; /* Assicura che il canvas del grafico occupi il 100% della larghezza */
+  height: auto !important; /* L'altezza si adatta in modo automatico */
+}
+
+.close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 24px;
+  cursor: pointer;
 }
