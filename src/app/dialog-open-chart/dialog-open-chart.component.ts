@@ -1,24 +1,27 @@
 import { Component, OnInit, Inject } from '@angular/core';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import Chart from 'chart.js/auto';
 
 @Component({
   selector: 'app-dialog-open-chart',
   templateUrl: './dialog-open-chart.component.html',
-  styleUrl: './dialog-open-chart.component.css'
+  styleUrls: ['./dialog-open-chart.component.css'] // Corretto "styleUrl" in "styleUrls"
 })
-export class DialogOpenChartComponent implements OnInit{
+export class DialogOpenChartComponent implements OnInit {
   
-  constructor(@Inject(MAT_DIALOG_DATA) public data: { pieChartData: number[], totalCalls: number }) {}
- 
+  constructor(
+    @Inject(MAT_DIALOG_DATA) public data: { pieChartData: number[], totalCalls: number },
+    private dialogRef: MatDialogRef<DialogOpenChartComponent> // Aggiunto per gestire il dialogo
+  ) {}
+
   ngOnInit(): void {
     this.createPieChart();
   }
  
   createPieChart(): void {
     const uniqueData = this.getUniqueData(this.data.pieChartData);
- 
     const ctx = document.getElementById('pieChartCanvas') as HTMLCanvasElement;
+
     new Chart(ctx, {
       type: 'pie',
       data: {
@@ -31,6 +34,7 @@ export class DialogOpenChartComponent implements OnInit{
       },
       options: {
         responsive: true,
+        maintainAspectRatio: false, // Assicurati che il grafico occupi tutto lo spazio disponibile
         plugins: {
           legend: {
             position: 'top',
@@ -60,5 +64,9 @@ export class DialogOpenChartComponent implements OnInit{
         return true;
       }
     });
+  }
+
+  closeDialog(): void {
+    this.dialogRef.close(); // Chiude il dialogo
   }
 }

@@ -1,6 +1,7 @@
-<h1 mat-dialog-title>Statistiche Chiamate</h1>
-<div mat-dialog-content>
-  <div class="chart-container">
-    <canvas id="pieChartCanvas"></canvas>
-  </div>
+<div class="dialog-header">
+  <h2>Statistiche Chiamate</h2>
+  <button class="close-button" (click)="closeDialog()">X</button>
+</div>
+<div class="dialog-content">
+  <canvas id="pieChartCanvas" style="width: 100%; height: 100%;"></canvas>
 </div>

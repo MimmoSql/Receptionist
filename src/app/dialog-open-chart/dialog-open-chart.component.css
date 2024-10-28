@@ -1,11 +1,18 @@
+.dialog-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  background-color: #f1f1f1; /* Colore di sfondo dell'intestazione */
+}
 
-.chart-container {
-    width: 400px;  /* Imposta la larghezza desiderata */
-    height: 400px; /* Imposta l'altezza desiderata */
-  }
-  
-  #pieChartCanvas {
-    width: 100% !important;
-    height: 100% !important;
-  }
-  
+.close-button {
+  border: none;
+  background: none;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.dialog-content {
+  height: 400px; /* Puoi modificare questo valore a seconda delle tue esigenze */
+}

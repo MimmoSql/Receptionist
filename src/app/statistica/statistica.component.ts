@@ -158,7 +158,7 @@ export class StatisticaComponent implements OnInit, OnDestroy {
                         if (response.calls.length < limit) {
                             hasMoreData = false;
                         } else {
-                            page++;
+                            page++; 
                         }
                     } else {
                         throw new Error('Nessun dato ricevuto');
